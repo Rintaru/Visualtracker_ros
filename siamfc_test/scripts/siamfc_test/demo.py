@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/home/sekiro/final_year_ws/py2.7env/bin/python
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2017 bily     Huazhong University of Science and Technology
@@ -46,14 +46,15 @@ def main():
     if sys.argv[1] == "cam":
         cap = cv2.VideoCapture(0)
     else:
-        cap = cv2.VideoCapture(sys.argv[1])
+        print(sys.argv[1])
+        cap = cv2.VideoCapture("/dev/video2")
 
     while True:
         # Capture frame-by-frame
         ret, frame = cap.read()
         frame = preprocess(frame)
         cv2.imshow('frame', postprocess(frame))
-        if cv2.waitKey(1500) & 0xFF == ord('o'):
+        if cv2.waitKey(50) & 0xFF == ord('o'):
             break
 
     # select ROI and initialize the model
@@ -81,8 +82,7 @@ def main():
         time_per_frame = 0.9 * time_per_frame + 0.1 * duration.microseconds
         cv2.putText(frame, 'FPS ' + str(round(1e6 / time_per_frame, 1)),
                     (30, 50), 0, 1, (0, 0, 255), 3)
-
-        cv2.imshow('frame', postprocess(frame))
+        cv2.imshow('frame', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

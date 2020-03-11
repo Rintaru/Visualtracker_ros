@@ -1,4 +1,4 @@
-#!/home/sekiro/final_year_ws/venv/bin/python3
+#!/home/sekiro/final_year_ws/py2.7env/bin/python
 
 from __future__ import absolute_import
 from __future__ import division
@@ -19,7 +19,8 @@ import tensorflow as tf
 CURRENT_DIR = osp.dirname(__file__)
 sys.path.append(osp.join(CURRENT_DIR, 'src/..'))
 
-from SiamFC_tf import inference
+from siamfc_test import SiameseTracker
 from inference.tracker import Tracker
 from utils.infer_utils import Rectangle
 from utils.misc_utils import auto_select_gpu, mkdir_p, sort_nicely, load_cfgs
+print("all imports succeded")
