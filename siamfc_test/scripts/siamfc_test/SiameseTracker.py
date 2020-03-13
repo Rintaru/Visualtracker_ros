@@ -33,7 +33,7 @@ class SiameseTracker:
                  checkpoint='Logs/SiamFC/track_model_checkpoints/SiamFC-3s-color-pretrained'):
         os.environ['CUDA_VISIBLE_DEVICES'] = auto_select_gpu()
 
-        # run only on cpu
+        ## run only on cpu
         # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
         model_config, _, track_config = load_cfgs(checkpoint)

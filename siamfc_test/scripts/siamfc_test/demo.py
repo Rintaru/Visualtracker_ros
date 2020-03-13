@@ -39,15 +39,7 @@ def main():
     tracker = SiameseTracker(debug=0)
     time_per_frame = 0
 
-    if len(sys.argv) <= 1:
-        print('[ERROR]: File path error!')
-        return
-
-    if sys.argv[1] == "cam":
-        cap = cv2.VideoCapture(0)
-    else:
-        print(sys.argv[1])
-        cap = cv2.VideoCapture("/dev/video2")
+    cap = cv2.VideoCapture("/dev/video2")
 
     while True:
         # Capture frame-by-frame
