@@ -39,7 +39,7 @@ def main():
     tracker = SiameseTracker(debug=0)
     time_per_frame = 0
 
-    cap = cv2.VideoCapture("/dev/video2")
+    cap = cv2.VideoCapture("/dev/video3")
 
     while True:
         # Capture frame-by-frame
@@ -54,6 +54,12 @@ def main():
     cv2.destroyWindow("ROI selector")
     print('ROI:', r)
     tracker.set_first_frame(frame, r)
+    print('debug')
+    print(type(r))
+    print('\n')
+    print(len(r))
+    print('\n')
+    print(r)
 
     while True:
         ret, frame = cap.read()
