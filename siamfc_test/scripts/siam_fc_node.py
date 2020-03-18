@@ -29,28 +29,19 @@ class tracking_algorithim():
         self.tgt_heading_pub = rospy.Publisher('tgt_heading',Vector3Stamped,queue_size=10)
         self.PubRate = rospy.Rate(10)#defining the rate at which we publish target headings, 10hz
         self.tgt_heading=Vector3Stamped()#this was defined here so that it would only be initialized once to avoid memory issues
-        #initialise subscriber
-        rospy.Subscriber('/cv_camera/image_raw',Image,self.subscriber_callback)
+        #initialise subscriber to cv_camera_node
+        rospy.Subscriber('/cv_camera/image_raw',Image,self.subscriber_callback, queue_size=2)
+        #initialise subscriber to siamfc_node initialiser
+        rospy.Subscriber('/initial_image',,,)
 
 
         self.publish()#this needs to be removed after testing
 
-        #loading model
+        #loading model and init tracker
         rospackage = rospkg.RosPack()
         model_path = rospackage.get_path('siamfc_test')+'/scripts/siamfc_test/Logs/SiamFC/track_model_checkpoints/SiamFC-3s-color-pretrained'
         self.tracker = SiameseTracker(debug=0, checkpoint=model_path)
         print("yeet?")
-
-        #load image and init tracker. This might have to be moved to a separate node. beccause the siamFC node will be the only node that is in the docker 
-        tracker_tgt_path = rospackage.get_path('siamfc_test') + '/tracker_tgt.png'
-        tracker_tgt=cv2.imread(tracker_tgt_path)
-        ##uncomment for debugging purposes
-        #cv2.imshow('tgt',tracker_tgt)
-        #cv2.waitKey(100)
-        
-        #Setting the bounding box to the entire FOV of the camera to search for the target upon initialization. This should be updated beccause it might not work.
-        r=(0,0,640,480)
-        self.tracker.set_first_frame(tracker_tgt,r)
 
     def publish(self):
         self.PubRate.sleep()
@@ -67,11 +58,23 @@ class tracking_algorithim():
         #print(cv_image.shape)
         #cv2.waitKey(1)
 
+        reported_bbox = self.tracker.track(cv_image)
+        cv2.rectangle(cv_image, (int(reported_bbox[0]), int(reported_bbox[1])),
+                      (
+                          int(reported_bbox[0]) + int(reported_bbox[2]),
+                          int(reported_bbox[1]) + int(reported_bbox[3])),
+                      (0, 0, 255), 2)
+
+        cv2.imshow('frame', cv_image)
+        cv2.waitKey(1)
+
+
+
 if __name__ == '__main__':
     try:
         tracking_algorithim()
         print("yeet!")
         rospy.spin()
-        print("\nI am ded")
+        print("\n I am ded")
     except rospy.ROSInterruptException:
         pass
