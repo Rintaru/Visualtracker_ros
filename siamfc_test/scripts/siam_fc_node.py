@@ -15,10 +15,12 @@ import rospkg
 #ros msgs to be used
 from geometry_msgs.msg import Vector3Stamped 
 from sensor_msgs.msg import Image
+#ros service to be used
+from siamfc_test.srv import img_bb_srv
 #imports for visual tracking
 import cv2
 from cv_bridge import CvBridge
-from siamfc_test.SiameseTracker import SiameseTracker
+from siam_fc.SiameseTracker import SiameseTracker
 
 class tracking_algorithim():
     def __init__(self):
@@ -31,15 +33,14 @@ class tracking_algorithim():
         self.tgt_heading=Vector3Stamped()#this was defined here so that it would only be initialized once to avoid memory issues
         #initialise subscriber to cv_camera_node
         rospy.Subscriber('/cv_camera/image_raw',Image,self.subscriber_callback, queue_size=2)
-        #initialise subscriber to siamfc_node initialiser
-        rospy.Subscriber('/initial_image',,,)
-
+        #initialise service for init_siamfc_node
+        #rospy.Service('init_img',,)
 
         self.publish()#this needs to be removed after testing
 
         #loading model and init tracker
         rospackage = rospkg.RosPack()
-        model_path = rospackage.get_path('siamfc_test')+'/scripts/siamfc_test/Logs/SiamFC/track_model_checkpoints/SiamFC-3s-color-pretrained'
+        model_path = rospackage.get_path('siamfc_test')+'/scripts/siam_fc/Logs/SiamFC/track_model_checkpoints/SiamFC-3s-color-pretrained'
         self.tracker = SiameseTracker(debug=0, checkpoint=model_path)
         print("yeet?")
 
