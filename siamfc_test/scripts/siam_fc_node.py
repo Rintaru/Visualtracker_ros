@@ -1,4 +1,4 @@
-#!/home/sekiro/final_year_ws/py2.7env/bin/python
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2017 bily     Huazhong University of Science and Technology
@@ -91,7 +91,7 @@ class tracking_algorithim():
 
     #initialise subscriber to cv_camera node
     def init_subscriber(self):
-        print('initialising subscriber')
+        print('waiting for initial image')
         #if the visual tracker has not received an inital image AND node has not been shutdown then block
         while not self.is_tracker_init and not rospy.is_shutdown():
             pass

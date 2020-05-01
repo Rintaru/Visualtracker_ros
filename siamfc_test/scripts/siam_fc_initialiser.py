@@ -1,4 +1,4 @@
-#!/home/sekiro/final_year_ws/py2.7env/bin/python
+#! /usr/bin/env python
 r"""This node outputs the image that is used to initialise the visual tracker."""
 from __future__ import absolute_import
 from __future__ import division
