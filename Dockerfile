@@ -67,7 +67,7 @@ RUN echo "catkin_make" >> ~/.bashrc
 #standard bashrc lines for ROS
 RUN echo "source /home/final_year_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo "printf \"\nctrl-d if you want to exit container\n\n\"" >> ~/.bashrc
-#restore bashrc to it's original state so that catkin_make command is not run twice
+#restore bashrc to it's original state so that catkin_make command is not run twice.
 RUN echo "mv /docker_bashrc  ~/.bashrc" >> ~/.bashrc
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
