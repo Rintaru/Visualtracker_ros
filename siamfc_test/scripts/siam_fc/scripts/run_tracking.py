@@ -1,4 +1,4 @@
-#!/home/sekiro/final_year_ws/venv/bin/python
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2017 bily     Huazhong University of Science and Technology
