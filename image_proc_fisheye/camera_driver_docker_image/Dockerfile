@@ -48,6 +48,7 @@ RUN apt-get update && apt-get install -y \
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
+RUN chmod +x ros_entrypoint.sh
 COPY ./docker_bashrc.txt /docker_bashrc.txt
 RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 
