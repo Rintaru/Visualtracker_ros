@@ -116,5 +116,5 @@ if ! shopt -oq posix; then
   fi
 fi
 source /opt/ros/kinetic/setup.bash
-source /home/sekiro/leader_follower_ws/devel/setup.bash
+source /home/leader_follower_ws/devel/setup.bash
 printf "\n\nctrl-d if you want to exit container\n\n"

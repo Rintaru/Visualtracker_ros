@@ -61,8 +61,9 @@ RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 
 #copy leader_follower_ws into home, as it would be in host PC and echo specific commands in to bashrc
 RUN mkdir -p /home/leader_follower_ws
-RUN echo "rm -r /home/leader_follower_ws/src/image_proc_fisheye/" >> ~/.bashrc
 RUN echo "cp -r /workspace/leader_follower_ws/src /home/leader_follower_ws/src" >> ~/.bashrc
+#remove unneeded packages
+RUN echo "rm -r /home/leader_follower_ws/src/image_proc_fisheye/" >> ~/.bashrc
 RUN echo "cd /home/leader_follower_ws" >> ~/.bashrc
 RUN echo "catkin_make" >> ~/.bashrc
 #standard bashrc lines for ROS
