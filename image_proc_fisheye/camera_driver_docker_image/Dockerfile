@@ -46,6 +46,14 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
+# install image_proc packages
+RUN apt-get update && apt-get install -y \
+    ros-kinetic-image-transport \
+    ros-kinetic-image-geometry \
+    ros-kinetic-nodelet \
+    && rm -rf /var/lib/apt/lists/*
+
+
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
 RUN chmod +x ros_entrypoint.sh
@@ -55,6 +63,8 @@ RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 #copy leader_follower_ws into home, as it would be in host PC and echo specific commands in to bashrc
 RUN mkdir -p /home/leader_follower_ws
 RUN echo "cp -r /workspace/leader_follower_ws/src /home/leader_follower_ws/src" >> ~/.bashrc
+#remove unneeded packages
+RUN echo "rm -r /home/leader_follower_ws/src/siamfc_test" >> ~/.bashrc
 RUN echo "cd /home/leader_follower_ws" >> ~/.bashrc
 RUN echo "catkin_make" >> ~/.bashrc
 #standard bashrc lines for ROS
