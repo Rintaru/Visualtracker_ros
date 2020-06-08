@@ -1,7 +1,0 @@
-<launch>
-<include file="$(find realsense2_camera)/launch/rs_t265.launch"/>
-<node name="image_processor" pkg="image_proc" type="image_proc">
-    <remap from="image_raw" to="/camera/fisheye1/image_raw"/>
-    <remap from="camera_info" to="/camera/fisheye1/camera_info"/>
-</node>
-</launch>

@@ -65,6 +65,7 @@ if __name__ == '__main__':
             cv2.imshow('press o to select initial frame', track.postprocess(track.cv_tgt_image))
             selected_image=[track.cv_tgt_image, track.ros_tgt_image]
             if cv2.waitKey(50) & 0xFF == ord('o'):
+                print("nope")
                 boundingbox = cv2.selectROI(track.postprocess(selected_image[0]))
                 print('bounding box',boundingbox)
                 break

@@ -27,9 +27,9 @@ include_directories(include)
 add_library(${PROJECT_NAME}     src/nodelets/rectify_.cpp )
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-add_executable(image_proc_fisheye_exe src/image_proc_fisheye.cpp)
+add_executable(image_proc_fisheye_node src/image_proc_fisheye.cpp)
 
-target_link_libraries(image_proc_fisheye_exe
+target_link_libraries(image_proc_fisheye_node
    ${PROJECT_NAME}
    ${catkin_LIBRARIES}
 )

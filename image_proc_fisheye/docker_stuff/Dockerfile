@@ -46,11 +46,12 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
-# install image_proc packages
+# install image_proc and realsense packages
 RUN apt-get update && apt-get install -y \
     ros-kinetic-image-transport \
     ros-kinetic-image-geometry \
     ros-kinetic-nodelet \
+    ros-kinetic-realsense2-camera\
     && rm -rf /var/lib/apt/lists/*
 
 
