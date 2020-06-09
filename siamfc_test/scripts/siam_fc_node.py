@@ -35,9 +35,9 @@ class tracking_algorithim():
         rospy.init_node('siamfc_node',anonymous=False)
         
         #initialise publisher
-        self.tgt_heading_pub = rospy.Publisher('tgt_heading',Vector3Stamped,queue_size=10)
+        self.tgt_heading_pub = rospy.Publisher('tgt_heading',Image,queue_size=10)
         self.PubRate = rospy.Rate(10)#defining the rate at which we publish target headings, 10hz
-        self.tgt_heading=Vector3Stamped()#this was defined here so that it would only be initialized once to avoid memory issues
+        self.tgt_heading=Image()#this was defined here so that it would only be initialized once to avoid memory issues
         
         self.init_service()
 
@@ -47,14 +47,14 @@ class tracking_algorithim():
         print("yeet?")
 
     #function used to publish the tgt's location
-    def publish(self):
+    def publish(self,target_image):
+        self.tgt_heading=self.bridge.cv2_to_imgmsg(target_image, encoding="rgb8")
         self.PubRate.sleep()
-        self.tgt_heading.vector.x=10
         self.tgt_heading_pub.publish(self.tgt_heading)
     
     def subscriber_callback(self,image):
         #convert received image from sensor_msgs/Image to cv::mat
-        cv_image = self.bridge.imgmsg_to_cv2(image, desired_encoding='bgr16')
+        cv_image = self.bridge.imgmsg_to_cv2(image, desired_encoding='rgb8')
         ##uncomment for debugging purposes
         #cv2.imshow('camera',cv_image)
         #print(type(cv_image))
@@ -65,15 +65,16 @@ class tracking_algorithim():
         #actual tracking of the target occurs here
         reported_bbox = self.tracker.track(cv_image)
 
-        #Show the camera image with a box drawn around the target
+         #draw a bounding box on the target
         cv2.rectangle(cv_image, (int(reported_bbox[0]), int(reported_bbox[1])),
                       (
                           int(reported_bbox[0]) + int(reported_bbox[2]),
                           int(reported_bbox[1]) + int(reported_bbox[3])),
                       (0, 0, 255), 2)
-
-        cv2.imshow('frame', cv_image)
-        cv2.waitKey(3)
+        # #Show the camera image with a box drawn around the target
+        # cv2.imshow('frame', cv_image)
+        # cv2.waitKey(3)
+        self.publish(cv_image)
     
     #image to initialise the tracker is received here.
     def service_handle(self,init_img):
