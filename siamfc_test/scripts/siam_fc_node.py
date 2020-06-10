@@ -12,6 +12,7 @@ from __future__ import print_function
 import roslib
 import rospy
 import rospkg
+import os
 #ros msgs to be used
 from geometry_msgs.msg import Vector3Stamped 
 from sensor_msgs.msg import Image
@@ -42,7 +43,8 @@ class tracking_algorithim():
         self.init_service()
 
         self.init_subscriber()
-
+        self.after=rospy.Time.now().to_sec()*1000
+        self.before=rospy.Time.now().to_sec()*1000
 
         print("yeet?")
 
@@ -53,28 +55,47 @@ class tracking_algorithim():
         self.tgt_heading_pub.publish(self.tgt_heading)
     
     def subscriber_callback(self,image):
+        self.after=rospy.Time.now().to_sec()*1000
+        print("time since callback was called",(self.after-self.before),"mS","\n")
+        
+        self.before=rospy.Time.now().to_sec()*1000
         #convert received image from sensor_msgs/Image to cv::mat
         cv_image = self.bridge.imgmsg_to_cv2(image, desired_encoding='rgb8')
-        ##uncomment for debugging purposes
-        #cv2.imshow('camera',cv_image)
-        #print(type(cv_image))
-        #print('\n')
-        #print(cv_image.shape)
-        #cv2.waitKey(1)
+        self.after=rospy.Time.now().to_sec()*1000
+        print("time to convert ros_image to cv_image",(self.after-self.before),"mS","\n")
 
+        self.before=rospy.Time.now().to_sec()*1000
         #actual tracking of the target occurs here
         reported_bbox = self.tracker.track(cv_image)
+        self.after=rospy.Time.now().to_sec()*1000
+        print("time to track tgt",(self.after-self.before),"mS","\n")
 
+        self.before=rospy.Time.now().to_sec()*1000
          #draw a bounding box on the target
         cv2.rectangle(cv_image, (int(reported_bbox[0]), int(reported_bbox[1])),
                       (
                           int(reported_bbox[0]) + int(reported_bbox[2]),
                           int(reported_bbox[1]) + int(reported_bbox[3])),
                       (0, 0, 255), 2)
-        # #Show the camera image with a box drawn around the target
-        # cv2.imshow('frame', cv_image)
-        # cv2.waitKey(3)
+        self.after=rospy.Time.now().to_sec()*1000
+        print("time to draw tgt image",(self.after-self.before),"mS","\n")
+        
+        self.before=rospy.Time.now().to_sec()*1000
         self.publish(cv_image)
+        self.after=rospy.Time.now().to_sec()*1000
+        print("time to publish tgt image",(self.after-self.before),"mS","\n")
+
+        os.system('cls' if os.name == 'nt' else 'clear')
+        self.before=rospy.Time.now().to_sec()*1000
+    
+    #Used for debugging purposes
+    def display_image(im):
+        cv2.imshow('camera',im)
+        print(type(im))
+        print('\n')
+        print(im.shape)
+        cv2.waitKey(1)
+
     
     #image to initialise the tracker is received here.
     def service_handle(self,init_img):
