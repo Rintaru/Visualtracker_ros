@@ -1,5 +1,5 @@
 <launch>
-<include file="$(find realsense2_camera)/launch/rs_t265.launch"/>
+<!--<include file="$(find realsense2_camera)/launch/rs_t265.launch"/>-->
  <!-- nodelet manager from image stream -->
   <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager"  args="manager" />
   <node pkg="nodelet" type="nodelet" name="image_proc_fisheye" args="load image_proc_fisheye/RectifyNodelet camera_nodelet_manager" output="screen">    

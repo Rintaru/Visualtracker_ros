@@ -61,9 +61,10 @@ RUN chmod +x ros_entrypoint.sh
 COPY ./docker_bashrc.txt /docker_bashrc.txt
 RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 
-#copy leader_follower_ws into home, as it would be in host PC and echo specific commands in to bashrc
+#copy leader_follower_ws into home, as it would be in host PC. Echo specific commands in to bashrc
 RUN mkdir -p /home/leader_follower_ws
 RUN echo "cp -r /workspace/leader_follower_ws/src /home/leader_follower_ws/src" >> ~/.bashrc
+COPY ~/leader_follower_ws/src /home/leader_follower_ws/src
 #remove unneeded packages
 RUN echo "rm -r /home/leader_follower_ws/src/siamfc_test" >> ~/.bashrc
 RUN echo "cd /home/leader_follower_ws" >> ~/.bashrc
@@ -73,6 +74,3 @@ RUN echo "source /home/leader_follower_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo "printf \"\nctrl-d if you want to exit container\n\n\"" >> ~/.bashrc
 #restore bashrc to it's original state so that catkin_make command is not run twice.
 RUN echo "mv /docker_bashrc.txt  ~/.bashrc" >> ~/.bashrc
-
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]

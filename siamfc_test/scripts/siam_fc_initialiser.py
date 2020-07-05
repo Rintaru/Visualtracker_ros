@@ -65,7 +65,6 @@ if __name__ == '__main__':
             cv2.imshow('press o to select initial frame', track.postprocess(track.cv_tgt_image))
             selected_image=[track.cv_tgt_image, track.ros_tgt_image]
             if cv2.waitKey(50) & 0xFF == ord('o'):
-                print("nope")
                 boundingbox = cv2.selectROI(track.postprocess(selected_image[0]))
                 print('bounding box',boundingbox)
                 break
@@ -73,6 +72,8 @@ if __name__ == '__main__':
             #An attribute error occurs when calling track.cv_tgt_image before the subscriber_callback is called.
             #Cause is cv_tgt_image attribute is created inside subscriber_callback
             #This exception is used to give subscriber_callback time to run
+            print("...")
+            rospy.sleep(.5)
             pass
     
     call_service(selected_image[1],boundingbox)

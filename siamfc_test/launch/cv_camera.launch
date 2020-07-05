@@ -2,4 +2,5 @@
   <node name="cv_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="device_id" value="0" />
   </node>
+  <node name="siamfc_initialiser" pkg="siamfc_test" type="siam_fc_initialiser.py"/>
 </launch>
