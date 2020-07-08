@@ -43,4 +43,3 @@ namespace image_proc_fisheye {
     camera_set_ = true;
   }
 } // namespace
-
