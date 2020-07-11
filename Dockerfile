@@ -56,22 +56,9 @@ RUN pip install tensorflow-gpu==1.4.0 \
     nvidia-ml-py
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
-COPY ./docker_bashrc.txt /docker_bashrc.txt
 RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 
-#copy leader_follower_ws into home, as it would be in host PC and echo specific commands in to bashrc
-RUN mkdir -p /home/leader_follower_ws
-RUN echo "cp -r /workspace/leader_follower_ws/src /home/leader_follower_ws/src" >> ~/.bashrc
-#remove unneeded packages
-RUN echo "rm -r /home/leader_follower_ws/src/image_proc_fisheye/" >> ~/.bashrc
-RUN echo "cd /home/leader_follower_ws" >> ~/.bashrc
-RUN echo "catkin_make" >> ~/.bashrc
-#standard bashrc lines for ROS
-RUN echo "source /home/leader_follower_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo "printf \"\nctrl-d if you want to exit container\n\n\"" >> ~/.bashrc
-RUN echo "rosrun siamfc_test siam_fc_node.py" >> ~/.bashrc
-#restore bashrc to it's original state so that catkin_make command is not run twice.
-RUN echo "mv /docker_bashrc.txt  ~/.bashrc" >> ~/.bashrc
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
