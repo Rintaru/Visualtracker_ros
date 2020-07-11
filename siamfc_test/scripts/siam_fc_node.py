@@ -118,7 +118,7 @@ class tracking_algorithim():
         while not self.is_tracker_init and not rospy.is_shutdown():
             pass
         #subscribe to cv_camera node
-        rospy.Subscriber('/cv_camera/image_raw',Image,self.subscriber_callback, queue_size=2)
+        rospy.Subscriber('/camera_array/cam0/image_raw',Image,self.subscriber_callback, queue_size=2)
 
 
 

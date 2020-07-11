@@ -21,7 +21,7 @@ class tracking_algorithim():
         self.bridge = CvBridge()
         rospy.init_node('siamfc_initialiser',anonymous=False)
         #initialise subscriber to cv_camera_node
-        rospy.Subscriber('/cv_camera/image_raw',Image,self.subscriber_callback, queue_size=2)
+        rospy.Subscriber('/camera_array/cam0/image_raw',Image,self.subscriber_callback, queue_size=2)
     
     def subscriber_callback(self,image):
         #convert received image from sensor_msgs/Image to cv::mat
