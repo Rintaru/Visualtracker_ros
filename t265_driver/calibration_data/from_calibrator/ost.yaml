@@ -1,6 +1,6 @@
 image_width: 848
 image_height: 800
-camera_name: narrow_stereo
+camera_name: fisheye_camera
 camera_matrix:
   rows: 3
   cols: 3

@@ -78,6 +78,7 @@ RUN useradd -m $USERNAME && \
 RUN mkdir -p /home/$USERNAME/leader_follower_ws
 COPY ./camera_calibration_fisheye /home/$USERNAME/leader_follower_ws/src/camera_calibration_fisheye
 COPY ./image_proc_fisheye /home/$USERNAME/leader_follower_ws/src/image_proc_fisheye
+COPY ./calibration_data /home/$USERNAME/leader_follower_ws/src/calibration_data
 #set bashrc to catkin_make on startup
 
 #standard bashrc lines for ROS
