@@ -1,8 +1,11 @@
 <!--written by Daniel Ruiz, druiz@our.ecu.edu.au-->
 <launch>
+  <!--launch camera-->
   <include file="$(find image_proc_fisheye)/launch/t265.launch"/>
+  <!--laud camera callibration data-->
+  <rosparam file="$(find calibration_data)/from_calibrator/ost.yaml"/>
   <!-- nodelet manager from image stream -->
-  <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager"  args="manager" />
+  <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager"  args="manager" output="screen"/>
   <node pkg="nodelet" type="nodelet" name="image_proc_fisheye" args="load image_proc_fisheye/RectifyNodelet camera_nodelet_manager" output="screen">
     <remap from="image_raw" to="/camera/fisheye1/image_raw" />
     <remap from="image_rect" to="/camera/color/image_rect" />

@@ -1,3 +1,4 @@
+
 #include <nodelet/nodelet.h>
 #include "ros/ros.h"
 #include <image_transport/image_transport.h>
@@ -8,6 +9,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <image_geometry/pinhole_camera_model.h>
+#include <vector>
 
 namespace image_proc_fisheye
 {
@@ -23,7 +25,11 @@ namespace image_proc_fisheye
             ros::Publisher pub_;
             cv::Mat mapx_;
             cv::Mat mapy_;
-            bool camera_set_;
+            std::vector<double> camera_matrix;
+            std::vector<double> distorion_coefficients;
+            std::vector<double> rectification_matrix;
+            std::vector<double> projection_matrix;
+
     };
 
 }
