@@ -1,7 +1,5 @@
 #include "ros/ros.h"
 #include "rectify.h"
-
-
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(image_proc_fisheye::RectifyNodelet, nodelet::Nodelet)
 
@@ -18,10 +16,21 @@ namespace image_proc_fisheye {
     ROS_INFO("getting camera_matrix data");
     ROS_ASSERT(nh.hasParam("camera_name"));
     nh.getParam("camera_matrix/data",camera_matrix);
-    nh.getParam("distorion_coefficients/data",distorion_coefficients);
-    nh.getParam("rectification_matrix/data",rectification_matrix);
+    nh.getParam("distortion_coefficients/data",distortion_coefficients);
+    nh.getParam("image_width",image_width);
+    nh.getParam("image_height",image_height);
     ROS_INFO("got camera_matrix data \n initialising undistort function");
-   
+
+    cv::Mat _camera_matrix = cv::Mat(camera_matrix).reshape(0,3);
+    cv::Mat _distorion_coefficients = cv::Mat(distortion_coefficients);
+    cv::Size _camera_resolution(image_width,image_height);
+    ROS_INFO_STREAM(_camera_matrix.size());
+    cv::Mat m1; 
+    cv::Mat m2;
+    cv::fisheye::initUndistortRectifyMap(_camera_matrix, _distorion_coefficients, cv::Mat(), _camera_matrix,_camera_resolution, CV_32FC1, m1, m2);
+    mapx_ = cv::Mat(m1);
+    mapy_ = cv::Mat(m2);
+
   };
 
   void RectifyNodelet::process_image(const sensor_msgs::ImageConstPtr& frame){
@@ -38,16 +47,5 @@ namespace image_proc_fisheye {
     out_msg.image  = image_rect;
     pub_.publish(out_msg.toImageMsg());
   }
-
-  void RectifyNodelet::camera_info(const sensor_msgs::CameraInfoConstPtr& info_msg){
-    image_geometry::PinholeCameraModel camera;
-    camera.fromCameraInfo(info_msg);
-    cv::Mat m1;
-    cv::Mat m2;
-    cv::fisheye::initUndistortRectifyMap(camera.intrinsicMatrix(), camera.distortionCoeffs(), cv::Mat(), camera.intrinsicMatrix(), camera.fullResolution(), CV_32FC1, m1, m2);
-    mapx_ = cv::Mat(m1);
-    mapy_ = cv::Mat(m2);
-  }
-
 
 } // namespace

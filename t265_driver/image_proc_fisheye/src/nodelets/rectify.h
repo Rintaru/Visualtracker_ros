@@ -26,10 +26,11 @@ namespace image_proc_fisheye
             cv::Mat mapx_;
             cv::Mat mapy_;
             std::vector<double> camera_matrix;
-            std::vector<double> distorion_coefficients;
+            std::vector<double> distortion_coefficients;
             std::vector<double> rectification_matrix;
             std::vector<double> projection_matrix;
-
+            int image_width;
+            int image_height;
     };
 
 }
