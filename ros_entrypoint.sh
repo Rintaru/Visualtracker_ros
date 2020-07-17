@@ -12,5 +12,5 @@ catkin_make
 #standard bashrc lines for ROS
 source /home/leader_follower_ws/devel/setup.bash
 printf \n\nctrl-d if you want to exit container\n\n
-rosrun siamfc_test siam_fc_node.py
+roslaunch siamfc_test siam_fc_node.launch
 exec "$@"
