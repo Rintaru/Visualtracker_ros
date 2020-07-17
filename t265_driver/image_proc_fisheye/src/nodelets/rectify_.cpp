@@ -46,6 +46,7 @@ namespace image_proc_fisheye {
     out_msg.encoding = frame->encoding;
     out_msg.image  = image_rect;
     pub_.publish(out_msg.toImageMsg());
+    
   }
 
 } // namespace
