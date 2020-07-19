@@ -1,0 +1,5 @@
+<launch>
+  <node name="siamfc_initialiser" pkg="siamfc_test" type="siam_fc_initialiser.py">
+    <remap from="/camera_array/cam0/image_raw" to="/camera/image_rectified"/>
+  </node>
+</launch>
