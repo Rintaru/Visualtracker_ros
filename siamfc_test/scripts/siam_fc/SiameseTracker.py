@@ -30,7 +30,7 @@ from utils.misc_utils import auto_select_gpu, mkdir_p, load_cfgs, rmdir
 class SiameseTracker:
     def __init__(self,
                  debug=0,
-                 checkpoint='Logs/SiamFC/track_model_checkpoints/SiamFC-3s-color-pretrained'):
+                 checkpoint='Logs/SiamFC/track_model_checkpoints/SiamFC-3s-gray-pretrained'):
         os.environ['CUDA_VISIBLE_DEVICES'] = auto_select_gpu()
 
         ## run only on cpu
