@@ -1,0 +1,4 @@
+.git
+.vscode
+.catkin_workspace
+*.pyc
