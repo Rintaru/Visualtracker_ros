@@ -7,9 +7,9 @@ PLUGINLIB_EXPORT_CLASS(image_proc_fisheye::RectifyNodelet, nodelet::Nodelet)
 namespace image_proc_fisheye {
   void RectifyNodelet::onInit(){
     ros::NodeHandle &nh = getNodeHandle();
-    sub_ = nh.subscribe("image_raw", 5, &RectifyNodelet::process_image, this);
+    sub_ = nh.subscribe("image_raw", 1, &RectifyNodelet::process_image, this);
     // sub_info_ = nh.subscribe("camera_info", 5, &RectifyNodelet::camera_info, this);
-    pub_ = nh.advertise<sensor_msgs::Image>("image_rect", 10);
+    pub_ = nh.advertise<sensor_msgs::Image>("image_rect", 1);
 
 
 
