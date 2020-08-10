@@ -29,24 +29,27 @@ class tracking_algorithim():
         
         #load model used by visual tracker
         rospackage = rospkg.RosPack()
-        model_path = rospackage.get_path('siamfc_test')+'/scripts/siam_fc/Logs/SiamFC/track_model_checkpoints/SiamFC-3s-color-pretrained'
+        model_path = rospackage.get_path('siamfc_test')+'/scripts/siam_fc/Logs/SiamFC/track_model_checkpoints/SiamFC-3s-gray-pretrained'
         self.tracker = SiameseTracker(debug=0, checkpoint=model_path)
-        
+      
         #initialise node
         rospy.init_node('siamfc_node',anonymous=False)
-        
+
         #initialise publisher
-        self.tgt_heading_pub = rospy.Publisher('tgt_heading',Image,queue_size=10)
-        self.PubRate = rospy.Rate(10)#defining the rate at which we publish target headings, 10hz
-        self.tgt_heading=Image()#this was defined here so that it would only be initialized once to avoid memory issues
+        self.tgt_heading_pub = rospy.Publisher('tgt_heading',Image,queue_size=1)
         
+        self.PubRate = rospy.Rate(120)#defining the rate at which we publish target headings, 10hz
+        
+        self.tgt_heading=Image()#this was defined here so that it would only be initialized once to avoid memory issues
+
         self.init_service()
-
         self.init_subscriber()
-        self.after=rospy.Time.now().to_sec()*1000
-        self.before=rospy.Time.now().to_sec()*1000
 
-        print("yeet?")
+
+
+        self.after=rospy.Time.now().to_sec()*1000 #initialising timestamps for recording performance
+        self.before=rospy.Time.now().to_sec()*1000
+        self.img_timestamp=rospy.Time.now().to_sec()*1000
 
     #function used to publish the tgt's location
     def publish(self,target_image):
@@ -55,38 +58,33 @@ class tracking_algorithim():
         self.tgt_heading_pub.publish(self.tgt_heading)
     
     def subscriber_callback(self,image):
-        self.after=rospy.Time.now().to_sec()*1000
-        print("time since callback was called",(self.after-self.before),"mS","\n")
-        
         self.before=rospy.Time.now().to_sec()*1000
+        self.img_timestamp=image.header.stamp.to_sec( )*1000
+
+
         #convert received image from sensor_msgs/Image to cv::mat
         cv_image = self.bridge.imgmsg_to_cv2(image, desired_encoding='rgb8')
-        self.after=rospy.Time.now().to_sec()*1000
-        print("time to convert ros_image to cv_image",(self.after-self.before),"mS","\n")
 
-        self.before=rospy.Time.now().to_sec()*1000
-        #actual tracking of the target occurs here
-        reported_bbox = self.tracker.track(cv_image)
-        self.after=rospy.Time.now().to_sec()*1000
-        print("time to track tgt",(self.after-self.before),"mS","\n")
+        #if image time stamp is less than 400mS old. Then track target
+        if ((abs(self.img_timestamp-self.before))<50):
+            #actual tracking of the target occurs here
+            reported_bbox = self.tracker.track(cv_image)
 
-        self.before=rospy.Time.now().to_sec()*1000
-         #draw a bounding box on the target
-        cv2.rectangle(cv_image, (int(reported_bbox[0]), int(reported_bbox[1])),
-                      (
-                          int(reported_bbox[0]) + int(reported_bbox[2]),
-                          int(reported_bbox[1]) + int(reported_bbox[3])),
-                      (0, 0, 255), 2)
-        self.after=rospy.Time.now().to_sec()*1000
-        print("time to draw tgt image",(self.after-self.before),"mS","\n")
-        
-        self.before=rospy.Time.now().to_sec()*1000
-        self.publish(cv_image)
-        self.after=rospy.Time.now().to_sec()*1000
-        print("time to publish tgt image",(self.after-self.before),"mS","\n")
+            #draw a bounding box on the target
+            cv2.rectangle(cv_image, (int(reported_bbox[0]), int(reported_bbox[1])),
+                          (
+                              int(reported_bbox[0]) + int(reported_bbox[2]),
+                              int(reported_bbox[1]) + int(reported_bbox[3])),
+                          (0, 0, 255), 2)
+            self.publish(cv_image)
+            print("age of image timestamp",(abs(self.img_timestamp-self.before)),"mS", "PUB")
+        else:
+            print("age of image timestamp",(abs(self.img_timestamp-self.before)),"mS")
 
-        os.system('cls' if os.name == 'nt' else 'clear')
-        self.before=rospy.Time.now().to_sec()*1000
+            
+
+
+
     
     #Used for debugging purposes
     def display_image(im):
@@ -100,7 +98,7 @@ class tracking_algorithim():
     #image to initialise the tracker is received here.
     def service_handle(self,init_img):
         #convert initial image in to cv::mat
-        cv_init_img=self.bridge.imgmsg_to_cv2(init_img.img)
+        cv_init_img=self.bridge.imgmsg_to_cv2(init_img.img, desired_encoding='rgb8')
         self.tracker.set_first_frame(cv_init_img,init_img.bb)
         #setting this bool to True will allow this node to subscribe to cv_camera
         self.is_tracker_init=True
@@ -118,14 +116,13 @@ class tracking_algorithim():
         while not self.is_tracker_init and not rospy.is_shutdown():
             pass
         #subscribe to cv_camera node
-        rospy.Subscriber('/camera_array/cam0/image_raw',Image,self.subscriber_callback, queue_size=2)
+        rospy.Subscriber('/input_image_topic',Image,self.subscriber_callback, queue_size=1)
 
 
 
 if __name__ == '__main__':
     try:
-        tracking_algorithim()
-        print("yeet!")
+        tracking_algorithim() 
         rospy.spin()
         print("\n I am ded")
     except rospy.ROSInterruptException:
